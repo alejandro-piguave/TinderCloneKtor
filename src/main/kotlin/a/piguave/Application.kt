@@ -1,5 +1,11 @@
 package a.piguave
 
+import a.piguave.data.TinderRepository
+import a.piguave.data.TinderRepositoryImpl
+import a.piguave.data.match.MatchDataSource
+import a.piguave.data.match.MongoMatchDataSource
+import a.piguave.data.message.MessageDataSource
+import a.piguave.data.message.MongoMessageDataSource
 import a.piguave.data.user.MongoUserDataSource
 import a.piguave.data.user.UserDataSource
 import a.piguave.plugins.configureMonitoring
@@ -20,10 +26,15 @@ fun Application.module() {
     val connectionString = "mongodb+srv://alejandro-piguave:$mongoPassword@cluster0.skb9zqj.mongodb.net/?retryWrites=true&w=majority"
     val client = MongoClient.create(connectionString)
     val db = client.getDatabase("tinder-clone")
+
     val userDataSource: UserDataSource = MongoUserDataSource(db)
+    val messageDataSource: MessageDataSource = MongoMessageDataSource(db)
+    val matchDataSource: MatchDataSource = MongoMatchDataSource(db)
+
+    val repository: TinderRepository = TinderRepositoryImpl(userDataSource, matchDataSource, messageDataSource)
 
     configureSecurity()
     configureMonitoring()
     configureSerialization()
-    configureRouting(userDataSource)
+    configureRouting(repository)
 }

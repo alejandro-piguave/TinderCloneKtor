@@ -1,21 +1,18 @@
 package a.piguave.data.user
 
-import com.mongodb.client.model.Filters
-import com.mongodb.client.model.UpdateOptions
-import com.mongodb.client.model.Updates
+import com.mongodb.client.model.*
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
+import kotlinx.coroutines.flow.firstOrNull
 import java.time.LocalDate
 
 class MongoUserDataSource(db: MongoDatabase): UserDataSource {
     private val users = db.getCollection<User>("users")
-    override suspend fun createUser(id: String, name: String, birthdate: LocalDate, bio: String, gender: Gender, interestedIn: Interest, pictures: List<String>) {
-        users.insertOne(
-            User(id, name, bio, birthdate, gender, interestedIn, emptyList(), emptyList(), pictures)
-        )
+    override suspend fun createUser(id: String, name: String, birthdate: LocalDate, bio: String, gender: Gender, interestedIn: Interest, pictures: List<String>): Boolean {
+        return users.insertOne(User(id, name, bio, birthdate, gender, interestedIn, emptyList(), emptyList(), pictures)).wasAcknowledged()
     }
 
-    override suspend fun editUser(id: String, bio: String?, gender: Gender?, interestedIn: Interest?, pictures: List<String>?) {
-        if(bio == null && gender == null && interestedIn == null) return
+    override suspend fun editUser(id: String, bio: String?, gender: Gender?, interestedIn: Interest?, pictures: List<String>?): Boolean {
+        if(bio == null && gender == null && interestedIn == null) return false
 
         val filter = Filters.eq("_id", id)
 
@@ -27,18 +24,34 @@ class MongoUserDataSource(db: MongoDatabase): UserDataSource {
 
         val options = UpdateOptions().upsert(true)
 
-        users.updateOne(filter, update, options)
+        return users.updateOne(filter, update, options).wasAcknowledged()
     }
 
     override suspend fun getUsers(): List<User> {
         TODO("Not yet implemented")
     }
 
-    override suspend fun likeUser(id: String): Boolean {
-        TODO("Not yet implemented")
+    override suspend fun getUser(id: String): User? {
+        val filter = Filters.eq("_id", id)
+        return users.find(filter).firstOrNull()
     }
 
-    override suspend fun passUser(id: String): Boolean {
-        TODO("Not yet implemented")
+    override suspend fun likeUser(id: String, likedUserId: String): Boolean {
+        val filter = Filters.eq("_id", id)
+        val update = Updates.push(User::liked.name, likedUserId)
+        val options = UpdateOptions().upsert(true)
+        return users.updateOne(filter, update, options).wasAcknowledged()
+    }
+
+    override suspend fun hasUserLikedBack(id: String, likedUserId: String): Boolean {
+        val filter = Filters.and(Filters.eq("_id", likedUserId), Filters.all(User::liked.name, id))
+        return users.find(filter).firstOrNull() != null
+    }
+
+    override suspend fun passUser(id: String, passedUser: String): Boolean {
+        val filter = Filters.eq("_id", id)
+        val update = Updates.push(User::passed.name, passedUser)
+        val options = UpdateOptions().upsert(true)
+        return users.updateOne(filter, update, options).wasAcknowledged()
     }
 }
