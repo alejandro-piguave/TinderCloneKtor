@@ -1,17 +1,15 @@
 package a.piguave.data.user
 
-import a.piguave.rest.request.CreateUserRequest
-import a.piguave.rest.request.EditUserRequest
+import java.time.LocalDate
 
 interface UserDataSource {
-    suspend fun createUser(id: String, createUserRequest: CreateUserRequest)
+    suspend fun createUser(id: String, name: String, birthdate: LocalDate, bio: String,  gender: Gender, interestedIn: Interest, pictures: List<String>)
 
-    suspend fun likeUser(id: String)
+    suspend fun editUser(id: String, bio: String?, gender: Gender?, interestedIn: Interest?, pictures: List<String>?)
 
-    suspend fun passUser(id: String)
+    suspend fun getUsers(): List<User>
 
-    suspend fun editUser(id: String, editUserRequest: EditUserRequest)
+    suspend fun likeUser(id: String): Boolean
 
-    suspend fun getMatches(id: String)
-
+    suspend fun passUser(id: String): Boolean
 }

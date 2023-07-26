@@ -1,5 +1,7 @@
 package a.piguave
 
+import a.piguave.data.user.MongoUserDataSource
+import a.piguave.data.user.UserDataSource
 import a.piguave.plugins.configureMonitoring
 import a.piguave.plugins.configureRouting
 import a.piguave.plugins.configureSecurity
@@ -18,8 +20,10 @@ fun Application.module() {
     val connectionString = "mongodb+srv://alejandro-piguave:$mongoPassword@cluster0.skb9zqj.mongodb.net/?retryWrites=true&w=majority"
     val client = MongoClient.create(connectionString)
     val db = client.getDatabase("tinder-clone")
+    val userDataSource: UserDataSource = MongoUserDataSource(db)
+
     configureSecurity()
     configureMonitoring()
     configureSerialization()
-    configureRouting()
+    configureRouting(userDataSource)
 }

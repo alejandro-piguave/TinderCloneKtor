@@ -8,5 +8,6 @@ import kotlinx.serialization.Serializable
 class EditUserRequest(
     val bio: String?,
     val gender: Gender?,
-    val interestedIn: Interest?
+    val interestedIn: Interest?,
+    val pictures: List<String>?
 )
