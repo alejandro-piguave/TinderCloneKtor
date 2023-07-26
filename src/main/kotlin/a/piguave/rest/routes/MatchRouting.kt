@@ -1,6 +1,7 @@
 package a.piguave.rest.routes
 
 import a.piguave.rest.response.MatchResponse
+import a.piguave.rest.response.MessageResponse
 import io.ktor.http.*
 import io.ktor.server.application.*
 import io.ktor.server.response.*
@@ -16,7 +17,7 @@ fun Route.matches(){
     }
 
     get("matches/{matchId}/messages") {
-        call.respond(HttpStatusCode.OK)
+        call.respond(HttpStatusCode.OK, listOf<MessageResponse>())
 
     }
     post("matches/{matchId}/messages") {
