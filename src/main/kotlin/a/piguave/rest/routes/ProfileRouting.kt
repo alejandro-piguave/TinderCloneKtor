@@ -20,7 +20,7 @@ fun Route.profiles(repository: TinderRepository){
             return@post
         }
 
-        when(val result = repository.likeProfile("alexpi", userId)){
+        when(val result = repository.likeProfile("lauri", userId)){
             is LikeResult.Acknowledged -> {
                 call.respond(HttpStatusCode.OK, LikeResponse(result.matchId))
 

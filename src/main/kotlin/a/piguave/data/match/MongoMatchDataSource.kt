@@ -1,6 +1,8 @@
 package a.piguave.data.match
 
+import com.mongodb.client.model.Filters
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
+import kotlinx.coroutines.flow.toList
 
 class MongoMatchDataSource(db: MongoDatabase): MatchDataSource {
     private val matches = db.getCollection<Match>("matches")
@@ -12,6 +14,9 @@ class MongoMatchDataSource(db: MongoDatabase): MatchDataSource {
     }
 
     override suspend fun getMatches(id: String): List<Match> {
-        TODO("Not yet implemented")
+        val filter = Filters.all(Match::matchedUsers.name, id)
+        val matchList = mutableListOf<Match>()
+        matches.find(filter).toList(matchList)
+        return matchList
     }
 }

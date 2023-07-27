@@ -5,6 +5,7 @@ import a.piguave.data.message.MessageDataSource
 import a.piguave.data.user.UserDataSource
 import a.piguave.rest.request.CreateUserRequest
 import a.piguave.rest.request.EditUserRequest
+import a.piguave.rest.response.MatchResponse
 import a.piguave.rest.response.ProfileResponse
 
 class TinderRepositoryImpl(
@@ -32,6 +33,10 @@ class TinderRepositoryImpl(
             if(matchId == null) LikeResult.NotAcknowledged
             else LikeResult.Acknowledged(matchId)
         } else LikeResult.Acknowledged()
+    }
+
+    override suspend fun getMatches(id: String): List<MatchResponse> {
+        return matchDataSource.getMatches(id).map { MatchResponse(id, it) }
     }
 
     override suspend fun passProfile(id: String, passedId: String): Boolean {

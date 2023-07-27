@@ -12,7 +12,7 @@ import io.ktor.server.routing.*
 fun Route.users(repository: TinderRepository){
     post("users") {
         val request = call.receive<CreateUserRequest>()
-        val result = repository.createUser("alexpi", request)
+        val result = repository.createUser("lauri", request)
         call.respond(if(result) HttpStatusCode.OK else HttpStatusCode.Conflict)
     }
 
