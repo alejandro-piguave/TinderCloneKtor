@@ -22,7 +22,7 @@ class MongoUserDataSource(db: MongoDatabase): UserDataSource {
         val picturesUpdate = pictures?.let { Updates.set(User::pictures.name, it) }
         val update = Updates.combine(bioUpdate, genderUpdate, interestedInUpdate, picturesUpdate)
 
-        val options = UpdateOptions().upsert(true)
+        val options = UpdateOptions().upsert(false)
 
         return users.updateOne(filter, update, options).wasAcknowledged()
     }

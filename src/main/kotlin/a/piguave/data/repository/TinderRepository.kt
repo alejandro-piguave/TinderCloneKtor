@@ -18,4 +18,6 @@ interface TinderRepository {
 
     suspend fun getMatches(id: String): List<MatchResponse>
 
+    suspend fun sendMessage(id: String, matchId: String, message: String): Boolean
+
 }

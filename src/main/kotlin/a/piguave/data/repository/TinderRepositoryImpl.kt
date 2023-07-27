@@ -42,4 +42,8 @@ class TinderRepositoryImpl(
     override suspend fun passProfile(id: String, passedId: String): Boolean {
         return userDataSource.passUser(id, passedId)
     }
+
+    override suspend fun sendMessage(id: String, matchId: String, message: String): Boolean {
+        return messageDataSource.createMessage(matchId, id, message) && matchDataSource.updateLastMessage(matchId, message)
+    }
 }
