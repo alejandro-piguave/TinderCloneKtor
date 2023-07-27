@@ -5,6 +5,6 @@ import org.bson.types.ObjectId
 
 data class Match(
     val matchedUsers: List<String>,
-    val lastMessage: String,
+    val lastMessage: String = "",
     @BsonId val id: ObjectId = ObjectId(),
 )

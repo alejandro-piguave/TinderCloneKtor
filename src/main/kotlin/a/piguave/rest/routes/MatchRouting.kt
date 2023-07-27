@@ -1,6 +1,6 @@
 package a.piguave.rest.routes
 
-import a.piguave.data.TinderRepository
+import a.piguave.data.repository.TinderRepository
 import a.piguave.rest.response.MatchResponse
 import a.piguave.rest.response.MessageResponse
 import io.ktor.http.*

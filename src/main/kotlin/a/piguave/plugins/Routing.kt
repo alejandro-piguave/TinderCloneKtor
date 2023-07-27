@@ -1,6 +1,6 @@
 package a.piguave.plugins
 
-import a.piguave.data.TinderRepository
+import a.piguave.data.repository.TinderRepository
 import a.piguave.rest.routes.matches
 import a.piguave.rest.routes.profiles
 import a.piguave.rest.routes.users

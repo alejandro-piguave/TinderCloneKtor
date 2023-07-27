@@ -1,7 +1,7 @@
 package a.piguave
 
-import a.piguave.data.TinderRepository
-import a.piguave.data.TinderRepositoryImpl
+import a.piguave.data.repository.TinderRepository
+import a.piguave.data.repository.TinderRepositoryImpl
 import a.piguave.data.match.MatchDataSource
 import a.piguave.data.match.MongoMatchDataSource
 import a.piguave.data.message.MessageDataSource
