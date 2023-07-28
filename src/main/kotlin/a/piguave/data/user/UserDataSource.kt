@@ -9,7 +9,7 @@ interface UserDataSource {
 
     suspend fun getUser(id: String): User?
 
-    suspend fun getUsers(): List<User>
+    suspend fun getUsersFor(user: User): List<User>
 
     suspend fun likeUser(id: String, likedUserId: String): Boolean
 

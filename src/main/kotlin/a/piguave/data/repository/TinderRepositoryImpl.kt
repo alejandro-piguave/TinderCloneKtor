@@ -22,7 +22,8 @@ class TinderRepositoryImpl(
     }
 
     override suspend fun getProfiles(id: String): List<ProfileResponse> {
-        return listOf()
+        val user = userDataSource.getUser(id) ?: return emptyList()
+        return userDataSource.getUsersFor(user).map { ProfileResponse(it) }
     }
 
     override suspend fun likeProfile(id: String, likedId: String): LikeResult {

@@ -3,6 +3,7 @@ package a.piguave.data.user
 import com.mongodb.client.model.*
 import com.mongodb.kotlin.client.coroutine.MongoDatabase
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.toList
 import java.time.LocalDate
 
 class MongoUserDataSource(db: MongoDatabase): UserDataSource {
@@ -27,14 +28,22 @@ class MongoUserDataSource(db: MongoDatabase): UserDataSource {
         return users.updateOne(filter, update, options).wasAcknowledged()
     }
 
-    override suspend fun getUsers(): List<User> {
-        TODO("Not yet implemented")
-    }
-
     override suspend fun getUser(id: String): User? {
         val filter = Filters.eq("_id", id)
         return users.find(filter).firstOrNull()
     }
+
+    override suspend fun getUsersFor(user: User): List<User> {
+        val interestFilter = Filters.`in`(User::interestedIn.name, Interest.BOTH, user.gender.toInterest())
+        val genderFilter = user.interestedIn.toGender()?.let { Filters.eq(User::gender.name, it) }
+        val idFilter = Filters.nin("_id", user.liked + user.passed + user.id)
+
+        val filter = Filters.and(interestFilter, genderFilter, idFilter)
+
+        val userList = mutableListOf<User>()
+        return users.find(filter).limit(20).toList(userList)
+    }
+
 
     override suspend fun likeUser(id: String, likedUserId: String): Boolean {
         val filter = Filters.eq("_id", id)
