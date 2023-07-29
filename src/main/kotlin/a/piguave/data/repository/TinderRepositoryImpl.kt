@@ -6,7 +6,10 @@ import a.piguave.data.user.UserDataSource
 import a.piguave.rest.request.CreateUserRequest
 import a.piguave.rest.request.EditUserRequest
 import a.piguave.rest.response.MatchResponse
+import a.piguave.rest.response.MessageResponse
 import a.piguave.rest.response.ProfileResponse
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 
 class TinderRepositoryImpl(
     private val userDataSource: UserDataSource,
@@ -24,6 +27,14 @@ class TinderRepositoryImpl(
     override suspend fun getProfiles(id: String): List<ProfileResponse> {
         val user = userDataSource.getUser(id) ?: return emptyList()
         return userDataSource.getUsersFor(user).map { ProfileResponse(it) }
+    }
+
+    override fun getMessagesFlow(userId: String, matchId: String): Flow<MessageResponse> {
+        return messageDataSource.getMessagesFlow(matchId).map { MessageResponse(userId, it) }
+    }
+
+    override suspend fun getMessages(userId: String, matchId: String): List<MessageResponse> {
+        return messageDataSource.getMessages(matchId).map { MessageResponse(userId, it) }
     }
 
     override suspend fun likeProfile(id: String, likedId: String): LikeResult {

@@ -8,10 +8,7 @@ import a.piguave.data.message.MessageDataSource
 import a.piguave.data.message.MongoMessageDataSource
 import a.piguave.data.user.MongoUserDataSource
 import a.piguave.data.user.UserDataSource
-import a.piguave.plugins.configureMonitoring
-import a.piguave.plugins.configureRouting
-import a.piguave.plugins.configureSecurity
-import a.piguave.plugins.configureSerialization
+import a.piguave.plugins.*
 import com.mongodb.kotlin.client.coroutine.MongoClient
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
@@ -33,6 +30,7 @@ fun Application.module() {
 
     val repository: TinderRepository = TinderRepositoryImpl(userDataSource, matchDataSource, messageDataSource)
 
+    configureWebSockets()
     configureSecurity()
     configureMonitoring()
     configureSerialization()
